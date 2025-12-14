@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>退職給付金（失業給付）かんたん診断</title>
+  <style>
+:root{
+  --bg:#0b1020;
+  --card: rgba(255,255,255,.06);
+  --text: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.65);
+  --line: rgba(255,255,255,.12);
+  --accent:#7dd3fc;
+  --accent2:#a78bfa;
+  --shadow: 0 18px 50px rgba(0,0,0,.45);
+  --radius: 18px;
+}
+*{ box-sizing: border-box; }
+html,body{ height: 100%; }
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(1200px 700px at 20% -10%, rgba(125,211,252,.25), transparent 55%),
+    radial-gradient(900px 600px at 90% 0%, rgba(167,139,250,.22), transparent 60%),
+    radial-gradient(900px 700px at 50% 110%, rgba(52,211,153,.14), transparent 60%),
+    var(--bg);
+}
+.wrap{ width:min(1100px, calc(100% - 32px)); margin: 0 auto; }
+.hero{
+  padding: 34px 0 18px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), transparent);
+}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+  color: var(--muted);
+  font-size: 12px;
+}
+h1{ margin: 14px 0 10px; font-size: clamp(22px, 3vw, 34px); letter-spacing: .02em; }
+.accent{
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+}
+.sub{ margin:0; color: var(--muted); line-height: 1.7; }
+.grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 18px 0 22px;
+}
+@media (max-width: 960px){ .grid{ grid-template-columns: 1fr; } }
+.card{
+  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+h2{ margin: 0 0 14px; font-size: 18px; }
+.row{ margin: 12px 0; }
+label{ display:block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+input, select{
+  width:100%;
+  color: var(--text);
+  background: rgba(0,0,0,.22);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 12px;
+  outline: none;
+}
+input:focus, select:focus{
+  border-color: rgba(125,211,252,.6);
+  box-shadow: 0 0 0 4px rgba(125,211,252,.12);
+}
+.ctrl{ position: relative; display:flex; align-items:center; }
+.ctrl input{ padding-right: 44px; }
+.unit{
+  position:absolute; right: 12px;
+  color: var(--muted); font-size: 12px; pointer-events:none;
+}
+.hint{ margin: 8px 0 0; font-size: 12px; color: var(--muted); line-height: 1.6; }
+.box{
+  margin: 10px 0 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(0,0,0,.18);
+}
+.check{ display:flex; gap: 10px; align-items:flex-start; margin: 8px 0; }
+.check input{ width: 18px; height: 18px; margin-top: 2px; }
+.check label{ margin:0; font-size: 13px; color: var(--text); }
+
+.actions{ display:flex; gap: 10px; margin-top: 14px; }
+.btn{
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  padding: 12px 14px;
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  cursor:pointer;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+.btn:hover{ background: rgba(255,255,255,.09); }
+.btn.primary{
+  border-color: rgba(125,211,252,.45);
+  background: linear-gradient(90deg, rgba(125,211,252,.22), rgba(167,139,250,.20));
+}
+.btn.ghost{ background: rgba(0,0,0,.14); }
+.btn.small{ padding: 8px 12px; border-radius: 12px; font-size: 12px; }
+.btn:disabled{ opacity: .55; cursor: not-allowed; }
+
+.msg{
+  margin-top: 12px;
+  min-height: 20px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.msg.ok{ color: rgba(52,211,153,.95); }
+.msg.warn{ color: rgba(251,191,36,.95); }
+.msg.bad{ color: rgba(251,113,133,.95); }
+
+.resultHead{
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.result{
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
+  background: rgba(0,0,0,.18);
+}
+.empty{ text-align:center; padding: 18px 10px; color: var(--muted); }
+.spark{ font-size: 28px; margin-bottom: 8px; }
+
+.kpis{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 520px){ .kpis{ grid-template-columns: 1fr; } }
+.kpi{
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255,255,255,.06);
+}
+.kpi .t{ color: var(--muted); font-size: 12px; }
+.kpi .v{ margin-top: 6px; font-size: 18px; font-weight: 900; letter-spacing: .02em; }
+.kpi .s{ margin-top: 4px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+
+.block{
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 13px;
+}
+.detail{
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,.05);
+}
+.detail summary{ cursor:pointer; font-weight: 900; color: var(--text); }
+.footer{ padding: 10px 0 22px; }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="badge">概算シミュレーター</div>
+      <h1>退職給付金（失業給付）<span class="accent">かんたん診断</span></h1>
+      <p class="sub">
+        直近6か月の賃金・年齢・雇用保険の加入期間・離職理由から、<b>1日あたり</b>と<b>総額</b>の目安を計算します。
+        <span style="opacity:.75">（最終的な金額はハローワークの決定が優先）</span>
+      </p>
+    </div>
+  </header>
+
+  <main class="wrap grid">
+    <section class="card">
+      <h2>入力</h2>
+
+      <div class="row">
+        <label for="age">離職時の年齢（必須）</label>
+        <div class="ctrl">
+          <input id="age" type="number" inputmode="numeric" min="15" max="100" placeholder="例：35" />
+          <span class="unit">歳</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="insuredMonths">雇用保険の加入期間（通算）</label>
+        <div class="ctrl">
+          <input id="insuredMonths" type="number" inputmode="numeric" min="0" max="600" placeholder="例：84（=7年）" />
+          <span class="unit">か月</span>
+        </div>
+        <p class="hint">未入力でも計算はできます（所定給付日数は“最短寄り”で概算）。</p>
+      </div>
+
+      <div class="row">
+        <label for="wage6m">離職直前6か月の賃金合計（必須・税引前）</label>
+        <div class="ctrl">
+          <input id="wage6m" type="number" inputmode="numeric" min="0" step="1000" placeholder="例：1800000" />
+          <span class="unit">円</span>
+        </div>
+        <p class="hint">原則「毎月決まって支払われた賃金」の合計を想定（賞与は除外）。</p>
+      </div>
+
+      <div class="row">
+        <label for="reason">離職理由（ざっくり）</label>
+        <select id="reason">
+          <option value="self" selected>自己都合（給付制限あり）</option>
+          <option value="retire">定年・契約満了など（給付制限なし扱い）</option>
+          <option value="special">会社都合（倒産・解雇など）/ 特定理由（給付制限なし）</option>
+          <option value="difficult">就職困難者（障害等）</option>
+        </select>
+      </div>
+
+      <div id="selfBox" class="box">
+        <div class="check">
+          <input id="repeatSelf" type="checkbox" />
+          <label for="repeatSelf">過去5年で「自己都合による受給」が2回以上（給付制限が3か月になる可能性）</label>
+        </div>
+        <div class="check">
+          <input id="trainingRelease" type="checkbox" />
+          <label for="trainingRelease">教育訓練等により給付制限が解除されるケースに該当（分かる場合のみ）</label>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="applyDate">ハローワークで求職申込した日（目安）</label>
+        <input id="applyDate" type="date" />
+        <p class="hint">ここは未入力でもOK（今日で計算）。</p>
+      </div>
+
+      <div class="actions">
+        <button id="calcBtn" class="btn primary" type="button">診断する</button>
+        <button id="resetBtn" class="btn ghost" type="button">リセット</button>
+      </div>
+
+      <div id="msg" class="msg" aria-live="polite"></div>
+    </section>
+
+    <section class="card">
+      <div class="resultHead">
+        <h2>結果</h2>
+        <button id="copyBtn" class="btn small" type="button" disabled>結果をコピー</button>
+      </div>
+
+      <div id="result" class="result">
+        <div class="empty">
+          <div class="spark">🧾</div>
+          <p>左の入力を埋めて「診断する」を押してください。</p>
+        </div>
+      </div>
+
+      <details class="detail">
+        <summary>計算の前提（クリックで表示）</summary>
+        <ul>
+          <li>賃金日額 ＝ 直近6か月賃金合計 ÷ 180（概算）</li>
+          <li>基本手当日額 ＝ 賃金日額 ×（約45%〜80%）＋上限/下限の適用</li>
+          <li>所定給付日数は、離職理由・年齢・加入期間で概算</li>
+          <li>支給開始目安：求職申込日から「待期7日」＋（自己都合なら給付制限）</li>
+        </ul>
+      </details>
+    </section>
+  </main>
+
+  <footer class="footer wrap">
+    <p style="opacity:.7; font-size:12px; line-height:1.6;">
+      ※このツールは概算です。実際の受給可否・金額・給付制限は、離職票の内容や個別事情により変わります。
+    </p>
+  </footer>
+
+  <script>
+(() => {
+  "use strict";
+
+  // もし初期化エラーが起きても、画面に出す（ボタン無反応対策）
+  window.addEventListener("error", (e) => {
+    const msg = document.getElementById("msg");
+    if (msg) {
+      msg.className = "msg bad";
+      msg.textContent = "スクリプトエラー: " + (e?.message || "unknown");
+    }
+  });
+
+  const CONFIG = {
+    ruleName: "令和7年8月1日基準（目安）",
+    minWageDaily: 3014,
+    maxWageDailyByAge: { u29:14510, a30_44:16110, a45_59:17740, a60_64:16940, a65plus:16940 },
+    minBenefitDaily: 2411,
+    maxBenefitDailyByAge:{ u29:7255, a30_44:8055, a45_59:8870, a60_64:7623, a65plus:7623 },
+    borderLow: 5340,
+    borderHigh_59: 13140,
+    borderHigh_60_64: 11800,
+    selfRestrictionMonthsAfter2025_04_01: 1,
+    selfRestrictionMonthsBefore2025_04_01: 2,
+    selfRestrictionPenaltyMonths: 3,
+    lawChangeDate: "2025-04-01",
+  };
+
+  const yen = new Intl.NumberFormat("ja-JP");
+  const $ = (id) => document.getElementById(id);
+
+  const els = {
+    age: $("age"),
+    insuredMonths: $("insuredMonths"),
+    wage6m: $("wage6m"),
+    reason: $("reason"),
+    selfBox: $("selfBox"),
+    repeatSelf: $("repeatSelf"),
+    trainingRelease: $("trainingRelease"),
+    applyDate: $("applyDate"),
+    calcBtn: $("calcBtn"),
+    resetBtn: $("resetBtn"),
+    copyBtn: $("copyBtn"),
+    msg: $("msg"),
+    result: $("result"),
+  };
+
+  document.addEventListener("DOMContentLoaded", init);
+
+  function init(){
+    // date初期値（valueAsDate を使わない＝環境差で壊れにくい）
+    setTodayIfEmpty(els.applyDate);
+
+    els.reason.addEventListener("change", syncSelfOptions);
+    els.calcBtn.addEventListener("click", onCalc);
+    els.resetBtn.addEventListener("click", onReset);
+    els.copyBtn.addEventListener("click", onCopy);
+
+    syncSelfOptions();
+    renderEmpty();
+  }
+
+  function setTodayIfEmpty(input){
+    if (!input) return;
+    if (input.value) return;
+    const d = new Date();
+    input.value = formatDate(d);
+  }
+
+  function syncSelfOptions(){
+    const isSelf = els.reason.value === "self";
+    els.selfBox.style.display = isSelf ? "block" : "none";
+  }
+
+  function onReset(){
+    els.age.value = "";
+    els.insuredMonths.value = "";
+    els.wage6m.value = "";
+    els.reason.value = "self";
+    els.repeatSelf.checked = false;
+    els.trainingRelease.checked = false;
+    els.applyDate.value = formatDate(new Date());
+    syncSelfOptions();
+    clearMsg();
+    renderEmpty();
+    els.copyBtn.disabled = true;
+  }
+
+  function onCalc(){
+    clearMsg();
+
+    const age = toInt(els.age.value);
+    const wage6m = toInt(els.wage6m.value);
+    const insuredMonths = toIntOrZero(els.insuredMonths.value);
+    const reason = els.reason.value;
+
+    const applyDate = parseDateOrToday(els.applyDate.value);
+
+    const errors = [];
+    if (!isFinite(age) || age < 15 || age > 100) errors.push("年齢（必須）を正しく入力してください（15〜100）。");
+    if (!isFinite(wage6m) || wage6m <= 0) errors.push("6か月賃金合計（必須）を入力してください。");
+
+    if (errors.length){
+      setMsg(errors.join(" "), "bad");
+      renderEmpty();
+      els.copyBtn.disabled = true;
+      return;
+    }
+
+    const ageBand = getAgeBand(age);
+
+    const wageDailyRaw = wage6m / 180;
+    const wageDaily = clamp(wageDailyRaw, CONFIG.minWageDaily, CONFIG.maxWageDailyByAge[ageBand]);
+
+    const benefitDailyRaw = computeBenefitDaily(wageDaily, age);
+    const benefitDaily = clamp(benefitDailyRaw, CONFIG.minBenefitDaily, CONFIG.maxBenefitDailyByAge[ageBand]);
+
+    const days = computeBenefitDays(reason, age, insuredMonths);
+
+    const restrictionMonths = computeRestrictionMonths(reason, age, applyDate);
+    const startDate = estimateStartDate(applyDate, restrictionMonths);
+    const endDate = estimateEndDate(startDate, days);
+
+    const total = Math.floor(benefitDaily) * days;
+    const monthly28 = Math.floor(benefitDaily) * 28;
+
+    const isHighAge = age >= 65;
+
+    renderResult({
+      age, insuredMonths, wage6m, reason,
+      wageDaily, wageDailyRaw,
+      benefitDaily, benefitDailyRaw,
+      days, total, monthly28,
+      restrictionMonths, startDate, endDate,
+      isHighAge
+    });
+
+    els.copyBtn.disabled = false;
+
+    const warns = [];
+    if (!els.insuredMonths.value) warns.push("加入期間が未入力なので、所定給付日数は“最短寄り”で概算。");
+    setMsg([`計算ルール：${CONFIG.ruleName}`, ...warns].join(" / "), warns.length ? "warn" : "ok");
+  }
+
+  function onCopy(){
+    const text = buildCopyTextFromResult();
+    if (!text){
+      setMsg("コピーする結果がありません。", "warn");
+      return;
+    }
+    copyToClipboard(text)
+      .then(() => setMsg("結果をコピーしました。", "ok"))
+      .catch(() => setMsg("コピーに失敗しました（ブラウザの権限設定をご確認ください）。", "bad"));
+  }
+
+  function renderEmpty(){
+    els.result.innerHTML = `
+      <div class="empty">
+        <div class="spark">🧾</div>
+        <p>左の入力を埋めて「診断する」を押してください。</p>
+      </div>
+    `;
+    delete els.result.dataset.copy;
+  }
+
+  function renderResult(r){
+    const reasonLabel = reasonToLabel(r.reason);
+    const ageBandLabel = ageBandToLabel(getAgeBand(r.age));
+    const startStr = formatDate(r.startDate);
+    const endStr = formatDate(r.endDate);
+
+    const restrictionStr =
+      r.reason === "self"
+        ? (r.restrictionMonths === 0 ? "なし（解除）" : `${r.restrictionMonths}か月`)
+        : "なし";
+
+    const title = r.isHighAge ? "高年齢求職者給付金（65歳以上）" : "基本手当（失業手当）";
+    const payoutNote = r.isHighAge
+      ? "※65歳以上は一括給付扱いのため、表示は概算です。"
+      : "※通常は4週間ごとの認定で支給（ここでは総額と28日換算を表示）。";
+
+    els.result.innerHTML = `
+      <div class="kpis">
+        <div class="kpi">
+          <div class="t">賃金日額（概算）</div>
+          <div class="v">${yen.format(Math.floor(r.wageDaily))}円</div>
+          <div class="s">6か月賃金合計 ÷ 180（上限/下限反映）</div>
+        </div>
+        <div class="kpi">
+          <div class="t">基本手当日額（概算）</div>
+          <div class="v">${yen.format(Math.floor(r.benefitDaily))}円</div>
+          <div class="s">給付率（約45〜80%）＋上限/下限反映</div>
+        </div>
+        <div class="kpi">
+          <div class="t">総額（概算）</div>
+          <div class="v">${yen.format(r.total)}円</div>
+          <div class="s">基本手当日額 × 所定給付日数（${r.days}日）</div>
+        </div>
+        <div class="kpi">
+          <div class="t">月あたり目安（28日換算）</div>
+          <div class="v">${yen.format(r.monthly28)}円</div>
+          <div class="s">あくまで目安</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div><b>区分：</b>${escapeHtml(title)}</div>
+        <div><b>離職理由：</b>${escapeHtml(reasonLabel)}</div>
+        <div><b>年齢区分：</b>${escapeHtml(ageBandLabel)}</div>
+        <div><b>所定給付日数：</b>${r.days}日</div>
+        <div><b>給付制限（自己都合のみ）：</b>${restrictionStr}</div>
+        <div><b>支給開始の目安：</b>${startStr}ごろ（待期7日＋給付制限反映）</div>
+        <div><b>受給終了の目安：</b>${endStr}ごろ</div>
+        <div style="margin-top:6px; opacity:.8;">${escapeHtml(payoutNote)}</div>
+      </div>
+    `;
+
+    els.result.dataset.copy = JSON.stringify({
+      title,
+      reason: reasonLabel,
+      age: r.age,
+      insuredMonths: r.insuredMonths,
+      wage6m: r.wage6m,
+      wageDaily: Math.floor(r.wageDaily),
+      benefitDaily: Math.floor(r.benefitDaily),
+      days: r.days,
+      total: r.total,
+      monthly28: r.monthly28,
+      restrictionMonths: r.restrictionMonths,
+      start: startStr,
+      end: endStr,
+      ruleName: CONFIG.ruleName
+    });
+  }
+
+  function buildCopyTextFromResult(){
+    const raw = els.result.dataset.copy;
+    if (!raw) return "";
+    let d;
+    try{ d = JSON.parse(raw); } catch { return ""; }
+
+    const restriction = (d.restrictionMonths === 0 ? "なし/解除" : `${d.restrictionMonths}か月`);
+
+    return [
+      `【${d.title} 概算結果】`,
+      `離職理由：${d.reason}`,
+      `年齢：${d.age}歳 / 加入期間：${d.insuredMonths}か月`,
+      `直近6か月賃金合計：${yen.format(d.wage6m)}円`,
+      `賃金日額：${yen.format(d.wageDaily)}円`,
+      `基本手当日額：${yen.format(d.benefitDaily)}円`,
+      `所定給付日数：${d.days}日`,
+      `総額：${yen.format(d.total)}円`,
+      `月目安（28日換算）：${yen.format(d.monthly28)}円`,
+      `給付制限（自己都合のみ）：${restriction}`,
+      `支給開始目安：${d.start} / 終了目安：${d.end}`,
+      `（計算ルール：${d.ruleName}）`,
+      `※最終金額はハローワークの決定が優先です。`
+    ].join("\n");
+  }
+
+  // ===== 計算ロジック =====
+
+  function getAgeBand(age){
+    if (age <= 29) return "u29";
+    if (age <= 44) return "a30_44";
+    if (age <= 59) return "a45_59";
+    if (age <= 64) return "a60_64";
+    return "a65plus";
+  }
+
+  function computeBenefitDaily(w, age){
+    let y;
+    if (age <= 59){
+      if (w < CONFIG.borderLow){
+        y = 0.8 * w;
+      } else if (w <= CONFIG.borderHigh_59){
+        y = 0.8 * w - 0.3 * ((w - CONFIG.borderLow) / 7800) * w;
+      } else {
+        y = 0.5 * w;
+      }
+    } else {
+      if (w < CONFIG.borderLow){
+        y = 0.8 * w;
+      } else if (w <= CONFIG.borderHigh_60_64){
+        const y1 = 0.8 * w - 0.35 * ((w - CONFIG.borderLow) / 6460) * w;
+        const y2 = 0.05 * w + 4720;
+        y = Math.min(y1, y2);
+      } else {
+        y = 0.45 * w;
+      }
+    }
+    return Math.floor(y);
+  }
+
+  function computeBenefitDays(reason, age, insuredMonths){
+    const years = insuredMonths / 12;
+
+    if (age >= 65){
+      return years >= 1 ? 50 : 30;
+    }
+    if (reason === "difficult"){
+      if (age < 45) return years >= 1 ? 300 : 150;
+      return 360;
+    }
+    if (reason === "special"){
+      const col = pickColumnForSpecial(years);
+      const row = pickRowForSpecial(age);
+      return specialDaysTable(row, col);
+    }
+    // retire / self は一般扱い
+    return generalDays(years);
+  }
+
+  function generalDays(years){
+    if (years < 10) return 90;
+    if (years < 20) return 120;
+    return 150;
+  }
+
+  function pickColumnForSpecial(years){
+    if (years < 1) return 0;
+    if (years < 5) return 1;
+    if (years < 10) return 2;
+    if (years < 20) return 3;
+    return 4;
+  }
+
+  function pickRowForSpecial(age){
+    if (age < 30) return "u30";
+    if (age < 35) return "a30_34";
+    if (age < 45) return "a35_44";
+    if (age < 60) return "a45_59";
+    return "a60_64";
+  }
+
+  function specialDaysTable(row, col){
+    const table = {
+      u30:     [  90,   90,   120,   180,  180 ],
+      a30_34:  [  90,  120,   180,   210,  240 ],
+      a35_44:  [  90,  150,   180,   240,  270 ],
+      a45_59:  [  90,  180,   240,   270,  330 ],
+      a60_64:  [  90,  150,   180,   210,  240 ],
+    };
+    return table[row][col];
+  }
+
+  function computeRestrictionMonths(reason, age, applyDate){
+    if (age >= 65) return 0;
+    if (reason !== "self") return 0;
+    if (els.trainingRelease.checked) return 0;
+
+    const change = new Date(CONFIG.lawChangeDate + "T00:00:00");
+    const base = (applyDate >= change)
+      ? CONFIG.selfRestrictionMonthsAfter2025_04_01
+      : CONFIG.selfRestrictionMonthsBefore2025_04_01;
+
+    if (els.repeatSelf.checked) return CONFIG.selfRestrictionPenaltyMonths;
+    return base;
+  }
+
+  function estimateStartDate(applyDate, restrictionMonths){
+    const d = new Date(applyDate);
+    d.setDate(d.getDate() + 7);
+    return addMonths(d, restrictionMonths);
+  }
+
+  function estimateEndDate(startDate, days){
+    const d = new Date(startDate);
+    d.setDate(d.getDate() + Math.max(0, days - 1));
+    return d;
+  }
+
+  // ===== UI補助 =====
+  function reasonToLabel(v){
+    switch(v){
+      case "self": return "自己都合（給付制限あり）";
+      case "retire": return "定年・契約満了など（給付制限なし扱い）";
+      case "special": return "会社都合（倒産・解雇等）/ 特定理由（給付制限なし）";
+      case "difficult": return "就職困難者（障害等）";
+      default: return v;
+    }
+  }
+  function ageBandToLabel(b){
+    switch(b){
+      case "u29": return "29歳以下";
+      case "a30_44": return "30〜44歳";
+      case "a45_59": return "45〜59歳";
+      case "a60_64": return "60〜64歳";
+      case "a65plus": return "65歳以上";
+      default: return b;
+    }
+  }
+
+  function setMsg(text, level){
+    els.msg.textContent = text || "";
+    els.msg.className = "msg" + (level ? ` ${level}` : "");
+  }
+  function clearMsg(){ setMsg("", ""); }
+
+  function toInt(v){
+    const n = Number(String(v).replace(/,/g,""));
+    return Number.isFinite(n) ? Math.floor(n) : NaN;
+  }
+  function toIntOrZero(v){
+    const n = Number(String(v).replace(/,/g,""));
+    return Number.isFinite(n) ? Math.floor(n) : 0;
+  }
+  function clamp(x, min, max){ return Math.max(min, Math.min(max, x)); }
+
+  function addMonths(date, months){
+    const d = new Date(date);
+    const day = d.getDate();
+    d.setMonth(d.getMonth() + months);
+    if (d.getDate() !== day) d.setDate(0);
+    return d;
+  }
+
+  function formatDate(d){
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    const dd = String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${dd}`;
+  }
+
+  function parseDateOrToday(str){
+    if (!str) return new Date();
+    const d = new Date(str + "T00:00:00");
+    return isNaN(d.getTime()) ? new Date() : d;
+  }
+
+  function escapeHtml(s){
+    return String(s)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#39;");
+  }
+
+  function copyToClipboard(text){
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise((resolve, reject) => {
+      try{
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        ta.style.top = "0";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        const ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        ok ? resolve() : reject();
+      }catch{
+        reject();
+      }
+    });
+  }
+})();
+  </script>
+</body>
+</html>
