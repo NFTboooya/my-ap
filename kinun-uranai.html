@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>金運占い｜Gold Fortune</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+:root{
+  --bg1:#07060b;
+  --bg2:#0f0b1b;
+  --gold1:#ffd36a;
+  --gold2:#ffb74a;
+  --gold3:#ffefb0;
+  --ink:#eae7ff;
+  --muted:#bdb7d8;
+  --card: rgba(255,255,255,.06);
+  --stroke: rgba(255,255,255,.14);
+  --shadow: 0 18px 60px rgba(0,0,0,.55);
+  --radius: 22px;
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  color:var(--ink);
+  background:
+    radial-gradient(1200px 700px at 20% 10%, rgba(255,211,106,.12), transparent 55%),
+    radial-gradient(900px 600px at 80% 20%, rgba(157,106,255,.12), transparent 55%),
+    radial-gradient(1000px 900px at 50% 110%, rgba(255,183,74,.10), transparent 60%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
+  font-family: "Zen Kaku Gothic New", system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans JP", sans-serif;
+  overflow-x:hidden;
+}
+
+.bg-glow{
+  position:fixed;
+  inset:-40px;
+  background:
+    radial-gradient(600px 300px at 10% 10%, rgba(255,211,106,.16), transparent 65%),
+    radial-gradient(520px 320px at 90% 15%, rgba(255,183,74,.14), transparent 65%),
+    radial-gradient(520px 420px at 50% 95%, rgba(160,120,255,.14), transparent 70%);
+  filter: blur(12px);
+  pointer-events:none;
+  z-index:0;
+  animation: floatGlow 8s ease-in-out infinite;
+}
+@keyframes floatGlow{
+  0%,100%{ transform: translateY(0px); opacity:.95; }
+  50%{ transform: translateY(10px); opacity:.8; }
+}
+
+.wrap{
+  position:relative;
+  z-index:1;
+  width:min(980px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 28px 0 60px;
+}
+
+.hero{
+  padding: 18px 6px 10px;
+  text-align:center;
+}
+.badge{
+  display:inline-flex;
+  gap:8px;
+  align-items:center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,211,106,.35);
+  background: rgba(255,211,106,.07);
+  color: var(--gold3);
+  letter-spacing: .18em;
+  font-weight:700;
+  font-size:12px;
+  text-transform: uppercase;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
+}
+
+.title{
+  margin: 14px 0 6px;
+  font-family: "Shippori Mincho", serif;
+  line-height:1.05;
+}
+.title-top{
+  display:block;
+  font-size: clamp(34px, 5vw, 54px);
+  letter-spacing: .06em;
+  background: linear-gradient(90deg, var(--gold3), var(--gold2), #fff, var(--gold1));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  text-shadow: 0 10px 30px rgba(255,183,74,.12);
+  position:relative;
+}
+.title-top::after{
+  content:"";
+  position:absolute;
+  left:0; right:0;
+  bottom:-10px;
+  height:1px;
+  background: linear-gradient(90deg, transparent, rgba(255,211,106,.55), transparent);
+}
+.title-sub{
+  display:block;
+  margin-top: 14px;
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: .12em;
+}
+.lead{
+  margin: 8px 0 0;
+  color: rgba(234,231,255,.86);
+  font-size: 14px;
+}
+
+.panel{
+  margin-top: 18px;
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow:hidden;
+  backdrop-filter: blur(14px);
+}
+.panel-head{
+  padding: 18px 18px 10px;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+  background:
+    radial-gradient(700px 120px at 50% 0%, rgba(255,211,106,.12), transparent 70%),
+    linear-gradient(180deg, rgba(255,255,255,.06), transparent);
+}
+.panel-title{
+  margin:0;
+  font-weight:700;
+  letter-spacing:.06em;
+}
+.panel-desc{
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.form{
+  padding: 16px 18px 18px;
+  display:grid;
+  gap: 14px;
+}
+.field{ display:grid; gap: 8px; }
+.field-label{
+  font-size: 13px;
+  color: rgba(255,255,255,.86);
+  letter-spacing:.08em;
+}
+input{
+  width:100%;
+  padding: 13px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(10,8,16,.55);
+  color: var(--ink);
+  outline:none;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
+}
+input:focus{
+  border-color: rgba(255,211,106,.55);
+  box-shadow: 0 0 0 3px rgba(255,211,106,.12), 0 0 0 1px rgba(255,255,255,.06) inset;
+}
+
+.money-input{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding-left: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(10,8,16,.55);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
+}
+.money-input .yen{
+  color: var(--gold3);
+  font-weight:700;
+  letter-spacing:.08em;
+}
+.money-input input{
+  border:0;
+  background:transparent;
+  box-shadow:none;
+  padding: 13px 12px 13px 0;
+}
+
+.hint{
+  color: rgba(255,255,255,.55);
+  font-size:12px;
+}
+
+.toggles{
+  display:flex;
+  gap: 14px;
+  flex-wrap:wrap;
+}
+.toggle{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  user-select:none;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.04);
+}
+.toggle input{ display:none; }
+.toggle-ui{
+  width: 44px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(0,0,0,.22);
+  position:relative;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
+}
+.toggle-ui::after{
+  content:"";
+  position:absolute;
+  top: 3px; left: 3px;
+  width: 20px; height: 20px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.55));
+  transform: translateX(0);
+  transition: transform .22s ease, background .22s ease;
+}
+.toggle input:checked + .toggle-ui{
+  background: rgba(255,211,106,.16);
+  border-color: rgba(255,211,106,.35);
+}
+.toggle input:checked + .toggle-ui::after{
+  transform: translateX(18px);
+  background: linear-gradient(180deg, var(--gold3), var(--gold2));
+}
+.toggle-text{
+  font-size: 13px;
+  color: rgba(255,255,255,.86);
+}
+
+.actions{
+  display:flex;
+  gap: 10px;
+  flex-wrap:wrap;
+  margin-top: 2px;
+}
+.btn{
+  appearance:none;
+  border:0;
+  cursor:pointer;
+  border-radius: 16px;
+  padding: 12px 14px;
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing:.06em;
+  transition: transform .12s ease, filter .12s ease, opacity .12s ease;
+  position:relative;
+  overflow:hidden;
+}
+.btn:active{ transform: translateY(1px) scale(.99); }
+.btn[disabled]{ opacity:.45; cursor:not-allowed; }
+
+.btn-primary{
+  flex: 1;
+  min-width: 210px;
+  background:
+    radial-gradient(140px 60px at 20% 10%, rgba(255,255,255,.25), transparent 60%),
+    linear-gradient(90deg, #ffcf5f, #ffb14a, #ffdca2);
+  color: #1a0f00;
+  box-shadow: 0 14px 30px rgba(255,183,74,.18), 0 0 0 1px rgba(255,255,255,.12) inset;
+}
+.btn-primary .btn-shine{
+  position:absolute;
+  inset:-40px;
+  background: linear-gradient(120deg, transparent 35%, rgba(255,255,255,.55), transparent 65%);
+  transform: translateX(-60%);
+  animation: shine 2.2s ease-in-out infinite;
+}
+@keyframes shine{
+  0%{ transform: translateX(-65%); opacity:.25; }
+  55%{ transform: translateX(0%); opacity:.55; }
+  100%{ transform: translateX(65%); opacity:.20; }
+}
+.btn-primary .btn-text{ position:relative; z-index:1; }
+
+.btn-ghost{
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.14);
+}
+.btn-secondary{
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+  border: 1px solid rgba(255,255,255,.16);
+}
+
+.result{
+  margin-top: 18px;
+  position:relative;
+}
+.fx{
+  position:absolute;
+  inset: -10px 0 auto 0;
+  width:100%;
+  height: 360px;
+  pointer-events:none;
+  opacity: .95;
+  filter: drop-shadow(0 18px 36px rgba(0,0,0,.35));
+}
+.placeholder{
+  margin-top: 14px;
+  padding: 18px;
+  border-radius: var(--radius);
+  border: 1px dashed rgba(255,255,255,.18);
+  color: rgba(255,255,255,.75);
+  text-align:center;
+  background: rgba(255,255,255,.03);
+}
+.placeholder-inner{
+  display:grid;
+  gap: 10px;
+  justify-items:center;
+}
+.coin{
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,255,255,.85), transparent 35%),
+    linear-gradient(180deg, var(--gold3), var(--gold2));
+  box-shadow: 0 18px 40px rgba(255,183,74,.18), 0 0 0 2px rgba(255,255,255,.12) inset;
+  position:relative;
+  animation: coinFloat 2.4s ease-in-out infinite;
+}
+.coin::after{
+  content:"¥";
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  color:#2a1400;
+  font-weight:900;
+  font-size: 22px;
+  text-shadow: 0 1px 0 rgba(255,255,255,.35);
+}
+@keyframes coinFloat{
+  0%,100%{ transform: translateY(0) rotate(-2deg); }
+  50%{ transform: translateY(-8px) rotate(2deg); }
+}
+
+.card{
+  position:relative;
+  margin-top: 14px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow:hidden;
+  backdrop-filter: blur(16px);
+}
+.card::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background:
+    radial-gradient(600px 220px at 30% 0%, rgba(255,211,106,.16), transparent 70%),
+    radial-gradient(520px 260px at 90% 10%, rgba(255,183,74,.12), transparent 72%),
+    linear-gradient(180deg, rgba(255,255,255,.08), transparent 35%);
+  pointer-events:none;
+}
+.card.is-hidden{ display:none; }
+
+.card-top{
+  position:relative;
+  padding: 18px 18px 10px;
+  display:flex;
+  gap: 12px;
+  align-items:flex-start;
+}
+.seal{
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  display:grid;
+  place-items:center;
+  color:#2a1400;
+  font-weight: 900;
+  background:
+    radial-gradient(circle at 25% 25%, rgba(255,255,255,.85), transparent 40%),
+    linear-gradient(180deg, var(--gold3), var(--gold2));
+  box-shadow: 0 18px 42px rgba(255,183,74,.16), 0 0 0 2px rgba(255,255,255,.12) inset;
+}
+.headline{ flex:1; position:relative; }
+.fortune-row{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap: 10px;
+}
+.fortune{
+  font-family: "Shippori Mincho", serif;
+  font-weight:700;
+  font-size: 26px;
+  letter-spacing:.10em;
+  background: linear-gradient(90deg, #fff, var(--gold3), var(--gold2));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.date{
+  color: rgba(255,255,255,.6);
+  font-size: 12px;
+  letter-spacing:.08em;
+}
+.oneLine{
+  margin: 8px 0 0;
+  color: rgba(255,255,255,.88);
+  font-size: 14px;
+}
+
+.score{
+  position:relative;
+  padding: 10px 18px 0;
+}
+.score-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom: 8px;
+}
+.score-label{ color: rgba(255,255,255,.75); font-size: 13px; letter-spacing:.06em; }
+.score-value{ font-size: 22px; font-weight: 900; color: var(--gold3); }
+.score-unit{ font-size: 12px; color: rgba(255,255,255,.65); margin-left:6px; font-weight:700; }
+
+.meter{
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.25);
+  border: 1px solid rgba(255,255,255,.12);
+  overflow:hidden;
+  position:relative;
+}
+.meter-bar{
+  height:100%;
+  width:0%;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, #ffd36a, #ffb74a, #fff0b7);
+  box-shadow: 0 8px 22px rgba(255,183,74,.22);
+  transition: width 700ms cubic-bezier(.2,.9,.2,1);
+}
+.meter-gloss{
+  position:absolute;
+  inset:-20px;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.22), transparent 60%);
+  transform: translateX(-40%);
+  animation: gloss 1.8s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes gloss{
+  0%{ transform: translateX(-60%); opacity:.15; }
+  50%{ transform: translateX(0%); opacity:.35; }
+  100%{ transform: translateX(60%); opacity:.15; }
+}
+
+.message{
+  position:relative;
+  padding: 12px 18px 6px;
+}
+.message-text{
+  margin:0;
+  color: rgba(255,255,255,.88);
+  line-height:1.75;
+}
+
+.grid{
+  padding: 10px 18px 4px;
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.chip{
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 18px;
+  padding: 12px 12px;
+}
+.chip-title{
+  color: rgba(255,255,255,.68);
+  font-size: 12px;
+  letter-spacing:.08em;
+}
+.chip-value{
+  margin-top: 6px;
+  font-weight: 800;
+  color: var(--gold3);
+  letter-spacing:.03em;
+}
+
+.tips{
+  padding: 10px 18px 0;
+}
+.tips-title{
+  color: rgba(255,255,255,.75);
+  font-weight: 800;
+  letter-spacing:.06em;
+  font-size: 13px;
+}
+.memo{
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: rgba(255,255,255,.86);
+  line-height:1.7;
+}
+.memo li{ margin: 6px 0; }
+
+.share{
+  padding: 14px 18px 18px;
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  flex-wrap:wrap;
+}
+.copied{
+  color: rgba(255,211,106,.9);
+  font-weight:700;
+  letter-spacing:.06em;
+}
+
+.fineprint{
+  padding: 0 18px 18px;
+  color: rgba(255,255,255,.55);
+  font-size: 12px;
+}
+
+.footer{
+  margin-top: 18px;
+  text-align:center;
+  color: rgba(255,255,255,.45);
+}
+
+@media (max-width: 780px){
+  .grid{ grid-template-columns: 1fr; }
+  .fx{ height: 300px; }
+}
+  </style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+
+  <main class="wrap">
+    <header class="hero">
+      <div class="badge">GOLD LUCK</div>
+      <h1 class="title">
+        <span class="title-top">金運占い</span>
+        <span class="title-sub">きょうの“お金の流れ”を可視化する</span>
+      </h1>
+      <p class="lead">結果はエンタメです。だけど、行動のきっかけは本物にしよう。</p>
+    </header>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">占い設定</h2>
+        <p class="panel-desc">名前を入れると「今日の固定結果モード」で日替わりの一貫した結果が出ます。</p>
+      </div>
+
+      <div class="form">
+        <label class="field">
+          <span class="field-label">ニックネーム（任意）</span>
+          <input id="name" type="text" placeholder="例）まひろ" maxlength="20" />
+        </label>
+
+        <label class="field">
+          <span class="field-label">今日の目標（任意）</span>
+          <div class="money-input">
+            <span class="yen">¥</span>
+            <input id="goal" type="number" placeholder="例）30000" min="0" step="100" />
+          </div>
+          <span class="hint">※目標は結果に直接影響しません（気持ちが整うやつ）。</span>
+        </label>
+
+        <div class="toggles">
+          <label class="toggle">
+            <input id="dailyMode" type="checkbox" checked />
+            <span class="toggle-ui"></span>
+            <span class="toggle-text">今日の固定結果モード</span>
+          </label>
+
+          <label class="toggle">
+            <input id="sound" type="checkbox" />
+            <span class="toggle-ui"></span>
+            <span class="toggle-text">サウンド（控えめ）</span>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="drawBtn" class="btn btn-primary">
+            <span class="btn-shine"></span>
+            <span class="btn-text">金運を占う</span>
+          </button>
+          <button id="rerollBtn" class="btn btn-ghost" disabled>もう一回</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="result" aria-live="polite">
+      <canvas id="fx" class="fx" width="1200" height="700" aria-hidden="true"></canvas>
+
+      <div id="card" class="card is-hidden">
+        <div class="card-top">
+          <div class="seal" aria-hidden="true">¥</div>
+          <div class="headline">
+            <div class="fortune-row">
+              <span id="fortune" class="fortune">—</span>
+              <span id="date" class="date">—</span>
+            </div>
+            <p id="oneLine" class="oneLine">—</p>
+          </div>
+        </div>
+
+        <div class="score">
+          <div class="score-head">
+            <span class="score-label">金運スコア</span>
+            <span class="score-value"><span id="scoreNum">0</span><span class="score-unit">/100</span></span>
+          </div>
+          <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div id="meterBar" class="meter-bar"></div>
+            <div class="meter-gloss"></div>
+          </div>
+        </div>
+
+        <div class="message">
+          <p id="message" class="message-text">—</p>
+        </div>
+
+        <div class="grid">
+          <div class="chip">
+            <div class="chip-title">ラッキーアイテム</div>
+            <div id="item" class="chip-value">—</div>
+          </div>
+          <div class="chip">
+            <div class="chip-title">ラッキーカラー</div>
+            <div id="color" class="chip-value">—</div>
+          </div>
+          <div class="chip">
+            <div class="chip-title">開運アクション</div>
+            <div id="action" class="chip-value">—</div>
+          </div>
+        </div>
+
+        <div class="tips">
+          <div class="tips-title">今日の“金の流れ”3行メモ</div>
+          <ul id="memo" class="memo">
+            <li>—</li>
+          </ul>
+        </div>
+
+        <div class="share">
+          <button id="copyBtn" class="btn btn-secondary">結果をコピー</button>
+          <span id="copied" class="copied" aria-live="polite"></span>
+        </div>
+
+        <div class="fineprint">
+          <p>※本アプリは娯楽目的です。投資・ギャンブル等の判断は自己責任で。</p>
+        </div>
+      </div>
+
+      <div id="placeholder" class="placeholder">
+        <div class="placeholder-inner">
+          <div class="coin" aria-hidden="true"></div>
+          <p>ボタンを押すと、今日の金運が開封される。</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <small>© Gold Fortune Web App</small>
+    </footer>
+  </main>
+
+  <script>
+"use strict";
+
+const $ = (id) => document.getElementById(id);
+
+const els = {
+  name: $("name"),
+  goal: $("goal"),
+  dailyMode: $("dailyMode"),
+  sound: $("sound"),
+  drawBtn: $("drawBtn"),
+  rerollBtn: $("rerollBtn"),
+  copyBtn: $("copyBtn"),
+  copied: $("copied"),
+  placeholder: $("placeholder"),
+  card: $("card"),
+  fx: $("fx"),
+  fortune: $("fortune"),
+  date: $("date"),
+  oneLine: $("oneLine"),
+  scoreNum: $("scoreNum"),
+  meterBar: $("meterBar"),
+  message: $("message"),
+  item: $("item"),
+  color: $("color"),
+  action: $("action"),
+  memo: $("memo"),
+};
+
+const DATA = {
+  tiers: [
+    { min: 92, label: "超大吉", vibe: "金の流れが太い。今日は“増やす”より“守りながら伸ばす”。" },
+    { min: 78, label: "大吉",   vibe: "チャンス多め。即決より“条件確認”が勝ち筋。" },
+    { min: 62, label: "中吉",   vibe: "堅実に上向き。小さな改善が大きな差になる。" },
+    { min: 46, label: "小吉",   vibe: "焦らないのが正解。ムダを1つ減らすと運が回る。" },
+    { min: 30, label: "末吉",   vibe: "静かな日。守りを固めるほど明日がラクになる。" },
+    { min: 0,  label: "凶",     vibe: "散財トラップ注意。今日は“買わない勇気”が最強。" },
+  ],
+  luckyItems: [
+    "白い封筒（レシート整理）","小銭入れ","電卓アプリ","シンプルな手帳","新品のペン",
+    "金色のクリップ","透明ファイル","銀行の通帳ケース","メモ帳","ケーブル収納バンド"
+  ],
+  luckyColors: ["ゴールド","シャンパン","ネイビー","ブラック","アイボリー","ワインレッド","ダークグリーン","シルバー"],
+  luckyActions: [
+    "財布の中を“1分だけ”整える","固定費を1つ見直す（保険/サブスク）","不要な通知を切る（衝動買い防止）",
+    "買い物カゴを一晩寝かせる","レシートを捨てずに3つだけ記録","家計の“勝ちパターン”を1行書く",
+    "入金予定・支払予定をまとめて確認","小さなご褒美を“予算内”で設計する"
+  ],
+  memos: [
+    "“大きく儲ける”より“漏れを止める”が効く日。",
+    "判断は急がず、条件を紙に書いてから。",
+    "未来の自分が喜ぶ支出だけ通す。",
+    "値引きより“回数を減らす”が勝ち。",
+    "迷ったら買わない。必要なら後で買える。",
+    "支出の“自動化”を増やすと運が上がる。",
+    "小さく始めて、続けて、勝つ。",
+    "今日の勝利は“冷静さ”。"
+  ],
+  messages: {
+    high: [
+      "今日は金運の追い風がある。勝ちに行くなら“条件”を決めてから動くのが最短ルート。",
+      "増やす力が強い日。ただし、派手に動くより“再現性のある一手”がハマる。",
+      "手元にお金が残りやすい。チャンスは来るので、準備ができてるところだけ掴め。"
+    ],
+    mid: [
+      "金運は堅実。小さな改善が効く日。固定費か、時間のムダを1つ潰すと後がラク。",
+      "増えもしないが減りにくい日。守りを固めて、明日の伸びしろを作ろう。",
+      "収支を整えるのに向く日。やるなら“記録・整理・見直し”のどれか1つ。"
+    ],
+    low: [
+      "散財しやすい気配。買う前に“必要/欲しい/見栄”を分けると回避できる。",
+      "誘惑が多い日。今日は“買わない”を勝ちにしよう。守れた分だけ明日が強い。",
+      "焦りは損の入口。今日は守備力アップの日だと思って、静かに整えるのが正解。"
+    ],
+  }
+};
+
+// ---------- RNG (seeded) ----------
+function xfnv1a(str) {
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return () => {
+    h += h << 13; h ^= h >>> 7;
+    h += h << 3;  h ^= h >>> 17;
+    h += h << 5;
+    return h >>> 0;
+  };
+}
+function mulberry32(a) {
+  return function() {
+    let t = (a += 0x6D2B79F5);
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function seededRandom(seedStr) {
+  const seed = xfnv1a(seedStr)();
+  return mulberry32(seed);
+}
+function pick(arr, rnd) {
+  return arr[Math.floor(rnd() * arr.length)];
+}
+function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+// ---------- Audio (subtle) ----------
+let audioCtx = null;
+function beep(type = "draw") {
+  if (!els.sound.checked) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = audioCtx;
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = "sine";
+    o.frequency.value = type === "draw" ? 740 : 520;
+    g.gain.value = 0.0001;
+
+    o.connect(g);
+    g.connect(ctx.destination);
+
+    const now = ctx.currentTime;
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(0.06, now + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+
+    o.start(now);
+    o.stop(now + 0.2);
+  } catch (_) {}
+}
+
+// ---------- FX (gold confetti) ----------
+function ensureRoundRect(ctx){
+  if (typeof ctx.roundRect === "function") return;
+  ctx.roundRect = function(x, y, w, h, r){
+    const rr = Array.isArray(r) ? r[0] : r;
+    const radius = Math.min(rr, w/2, h/2);
+    this.beginPath();
+    this.moveTo(x + radius, y);
+    this.arcTo(x + w, y, x + w, y + h, radius);
+    this.arcTo(x + w, y + h, x, y + h, radius);
+    this.arcTo(x, y + h, x, y, radius);
+    this.arcTo(x, y, x + w, y, radius);
+    this.closePath();
+    return this;
+  };
+}
+
+function runFX(intensity = 1) {
+  const c = els.fx;
+  const ctx = c.getContext("2d");
+  ensureRoundRect(ctx);
+
+  const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+  const rect = c.getBoundingClientRect();
+  c.width = Math.floor(rect.width * dpr);
+  c.height = Math.floor(rect.height * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const W = rect.width;
+  const H = rect.height;
+
+  const count = Math.floor(120 * intensity);
+  const parts = Array.from({ length: count }, () => ({
+    x: Math.random() * W,
+    y: -20 - Math.random() * 200,
+    r: 2 + Math.random() * 4,
+    vy: 1.2 + Math.random() * 3.4,
+    vx: -0.8 + Math.random() * 1.6,
+    rot: Math.random() * Math.PI,
+    vr: (-0.08 + Math.random() * 0.16),
+    a: 0.7 + Math.random() * 0.3,
+    t: 0
+  }));
+
+  let start = performance.now();
+  const duration = 1400;
+
+  function draw(now) {
+    const t = now - start;
+    ctx.clearRect(0, 0, W, H);
+
+    for (const p of parts) {
+      p.t += 1;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vr;
+
+      // slight drift
+      p.vx += (Math.random() - 0.5) * 0.03;
+
+      const fade = 1 - clamp(t / duration, 0, 1);
+      ctx.globalAlpha = p.a * fade;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+
+      // gold-ish confetti
+      const grad = ctx.createLinearGradient(-p.r, -p.r, p.r, p.r);
+      grad.addColorStop(0, "rgba(255,239,176,0.95)");
+      grad.addColorStop(0.5, "rgba(255,183,74,0.95)");
+      grad.addColorStop(1, "rgba(255,211,106,0.95)");
+      ctx.fillStyle = grad;
+
+      ctx.roundRect(-p.r, -p.r, p.r * 2.2, p.r * 1.4, 2);
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    ctx.globalAlpha = 1;
+
+    if (t < duration) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, W, H);
+  }
+
+  requestAnimationFrame(draw);
+}
+
+// ---------- Fortune generation ----------
+function getTodayStr() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function makeResult({ forceRandom = false } = {}) {
+  const name = (els.name.value || "").trim();
+  const daily = els.dailyMode.checked && !forceRandom;
+
+  const seedStr = daily
+    ? `daily:${getTodayStr()}:${name || "guest"}`
+    : `rand:${getTodayStr()}:${name || "guest"}:${Math.random()}`;
+
+  const rnd = seededRandom(seedStr);
+
+  // base score with a little “swing”
+  let score = Math.round(35 + rnd() * 65);
+  // tiny spice influenced by name length (still deterministic in daily mode)
+  score += clamp((name.length - 3) * 2, -6, 6);
+  score = clamp(score, 0, 100);
+
+  const tier = DATA.tiers.find(t => score >= t.min) || DATA.tiers[DATA.tiers.length - 1];
+
+  const item = pick(DATA.luckyItems, rnd);
+  const color = pick(DATA.luckyColors, rnd);
+  const action = pick(DATA.luckyActions, rnd);
+
+  const bucket =
+    score >= 78 ? "high" :
+    score >= 46 ? "mid" : "low";
+
+  const message = pick(DATA.messages[bucket], rnd);
+
+  const memo = [
+    pick(DATA.memos, rnd),
+    pick(DATA.memos, rnd),
+    pick(DATA.memos, rnd),
+  ].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3);
+
+  const oneLine = tier.vibe;
+
+  return { name, daily, score, tier: tier.label, oneLine, message, item, color, action, memo };
+}
+
+// ---------- UI helpers ----------
+function setText(el, text) {
+  el.textContent = text;
+}
+
+function animateScore(target) {
+  const start = 0;
+  const duration = 680;
+  const t0 = performance.now();
+  function tick(now) {
+    const t = clamp((now - t0) / duration, 0, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    const val = Math.round(start + (target - start) * eased);
+    setText(els.scoreNum, String(val));
+    els.meterBar.style.width = `${val}%`;
+    const meter = els.meterBar.parentElement;
+    meter.setAttribute("aria-valuenow", String(val));
+    if (t < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+function formatDateJP() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = d.getMonth() + 1;
+  const day = d.getDate();
+  return `${y}/${m}/${day}`;
+}
+
+function render(result) {
+  els.placeholder.style.display = "none";
+  els.card.classList.remove("is-hidden");
+
+  setText(els.fortune, result.tier);
+  setText(els.date, `${formatDateJP()} ${result.daily ? "・固定" : "・ランダム"}`);
+  setText(els.oneLine, result.name ? `${result.name}の金運：${result.oneLine}` : `今日の金運：${result.oneLine}`);
+
+  setText(els.message, result.message);
+  setText(els.item, result.item);
+  setText(els.color, result.color);
+  setText(els.action, result.action);
+
+  els.memo.innerHTML = result.memo.map(s => `<li>${escapeHtml(s)}</li>`).join("");
+
+  // score anim
+  setText(els.scoreNum, "0");
+  els.meterBar.style.width = "0%";
+  animateScore(result.score);
+
+  // FX intensity
+  const intensity = clamp(result.score / 100, 0.35, 1);
+  runFX(intensity);
+
+  // enable reroll
+  els.rerollBtn.disabled = false;
+
+  // reset copy label
+  els.copied.textContent = "";
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, (m) => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[m]));
+}
+
+function buildShareText(result) {
+  const goal = Number(els.goal.value || 0);
+  const goalLine = goal > 0 ? `目標：¥${goal.toLocaleString("ja-JP")}\n` : "";
+  return (
+`【金運占い】${formatDateJP()}
+結果：${result.tier}（金運スコア ${result.score}/100）
+${goalLine}一言：${result.oneLine}
+ラッキー：${result.item} / ${result.color}
+開運：${result.action}
+#金運占い`
+  ).trim();
+}
+
+async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (_) {
+    // fallback
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand("copy");
+      return true;
+    } catch (__){
+      return false;
+    } finally {
+      ta.remove();
+    }
+  }
+}
+
+// ---------- Events ----------
+let lastResult = null;
+
+els.drawBtn.addEventListener("click", () => {
+  beep("draw");
+  lastResult = makeResult({ forceRandom: false });
+  render(lastResult);
+});
+
+els.rerollBtn.addEventListener("click", () => {
+  beep("reroll");
+  lastResult = makeResult({ forceRandom: true });
+  render(lastResult);
+});
+
+els.copyBtn.addEventListener("click", async () => {
+  if (!lastResult) return;
+  const text = buildShareText(lastResult);
+  const ok = await copyToClipboard(text);
+  els.copied.textContent = ok ? "コピーした。" : "コピーできなかった（ブラウザ設定を確認して）。";
+  setTimeout(() => (els.copied.textContent = ""), 2200);
+});
+
+// First view date seed hint
+(function init(){
+  // canvas resize once
+  const resize = () => {
+    const c = els.fx;
+    const rect = c.getBoundingClientRect();
+    c.width = rect.width;
+    c.height = rect.height;
+  };
+  window.addEventListener("resize", resize);
+  resize();
+})();
+  </script>
+</body>
+</html>
